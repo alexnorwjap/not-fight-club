@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <section class="registration">
+        <h1 class="registration__title">What is your name, warrior?</h1>
+        <label class="registration__label">
+          <span class="registration__subtitle">Character Name</span>
+          <input class="registration__input" type="text" placeholder="Fighter"  maxlength="15">
+        </label>
+        <button class="registration__btn">Create Character</button>
+      </section>
+      <section class="homepage">
+        <div class="homepage__header">
+          <h2 class="homepage__title">
+            Name-title
+          </h2>
+          <div class="avatar"></div>
+          <ul class="homepage__menu">
+            <li class="homepage__item">
+              <a href="#" class="homepage__main-link">Main</a>
+            </li>
+            <li class="homepage__item">
+              <a href="#" class="homepage__character-link">Character</a>
+            </li>
+            <li class="homepage__item">
+              <a href="#" class="homepage__settings-link">Settings</a>
+            </li>
+          </ul>
+        </div>
+        <div class="homepage__main">
+          <button class="homepage__btn-fight">Fight!</button>
+        </div>
+        <div class="homepage__character character">
+          <div class="character__header">
+            <h2 class="character__title">Character</h2>
+            <div class="character__total">
+              <p>Wins:<span class="character__win"></span></p>
+              <p>Loses:<span class="character__lose"></span></p>
+            </div>
+          </div>
+
+          <button class="character__btn">Choose Character</button>
+          <ul class="character__list">
+            <li class="character__item">
+              <label class="character__img">
+                <img src="/images/Crusader.webp" alt="crusader">
+                <input type="radio" name="character" value="crusader">
+              </label>
+            </li>
+            <li class="character__item">
+              <label class="character__img">
+                <img src="/images/Grave_Robber.webp" alt="Grave_Robber">
+                <input type="radio" name="character">
+              </label>
+            </li>
+            <li class="character__item">
+            <label class="character__img">
+              <img src="/images/Hellion.webp" alt="Hellion">
+              <input type="radio" name="character">
+            </label>
+          </li>
+            <li class="character__item">
+              <label class="character__img">
+                <img src="/images/Hound_Master.webp" alt="Hound_Master">
+                <input type="radio" name="character">
+              </label>
+            </li>
+            <li class="character__item">
+              <label class="character__img">
+                <img src="/images/Jester.webp" alt="Jester">
+                <input type="radio" name="character">
+              </label>
+            </li>
+            <li class="character__item">
+              <label class="character__img">
+                <img src="/images/The_Flagellant.webp" alt="The_Flagellant">
+                <input type="radio" name="character">
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div class="homepage__settings">Settings!</div>
+      </section>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

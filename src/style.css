@@ -1,0 +1,59 @@
+@font-face {
+  font-family: 'Monstorm'; /* Замените на желаемое имя */
+  src: url('./fonts/Monstorm.otf') format('opentype');
+  font-weight: normal; /* или bold, если нужно */
+  font-style: normal; /* или italic, если нужно */
+  font-display: swap; /* для лучшей производительности */
+}
+
+:root {
+  --ff: Monstorm;
+
+  --animate: #784212;
+  --text-shadow:
+          0 0 10px #ff6b35,
+          0 0 20px #ff6b35,
+          0 0 30px #ff4500,
+          3px 3px 0 #8B0000,
+          6px 6px 15px rgba(0,0,0,0.7);
+  --text-shadow-active:
+          0 0 3px #ff6b35,
+          0 0 7px #ff6b35,
+          0 0 10px #ff4500,
+          2px 2px 0 #8B0000,
+          3px 3px 7px rgba(0,0,0,0.5);
+  --text-shadow-input:
+          0 0 3px #ff6b35,
+          0 0 7px #ff6b35,
+          0 0 10px #ff4500,
+          3px 3px 7px rgba(0,0,0,0.5);
+}
+
+* {
+  font-family: var(--ff), sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.1em;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: rgb(14, 6, 6);
+
+}
+
+button {
+  background: transparent;
+  border: none;
+}
+
+
+.wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+    flex-direction: column;
+
+
+}
