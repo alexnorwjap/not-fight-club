@@ -57,13 +57,11 @@
     width: 300px;
     font-weight: bold;
     text-shadow: var(--text-shadow-input);
-    //background: rgba(61, 47, 47, 0.7);
     background: transparent;
     padding: 5px 15px;
     caret-color: #ff6b35;
 
 
-    //border: 2px solid  #100b0b;
     border: 2px solid transparent;
     outline: none;
     border-radius: 5px;
@@ -120,10 +118,11 @@
 
   }
 
-  &.success {
-    opacity: 0;
-    scale: 0.5;
-    z-index: 0;
+  &.off {
+    animation: var(--animationOff);
+  }
+  &.on {
+    animation: var(--animationOn);
   }
 }
 
@@ -166,4 +165,27 @@
     scale: 1;
   }
 
+}
+
+@keyframes pageAnimationOn {
+  0% {
+    opacity: 0;
+    scale: 0.5;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes pageAnimationOff {
+  0% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 0.5;
+  }
 }
