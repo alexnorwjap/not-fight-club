@@ -1,0 +1,78 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  &.block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &.open {
+    opacity: 1;
+  }
+  &__window {
+    max-width: 1200px;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 2px solid #100b0b;
+    border-radius: 10px;
+    transition: all 0.5s ease;
+    &:hover {
+      scale: 1.05;
+    }
+  }
+
+  &__title {
+    font-size: 48px;
+    font-weight: bold;
+    color: #100b0b;
+
+    text-shadow: var(--text-shadow);
+  }
+
+  &__content {
+    font-size: 30px;
+    font-weight: bold;
+    color: #100b0b;
+
+    text-shadow: var(--text-shadow);
+  }
+
+  &__img {
+    max-width: 300px;
+  }
+
+  &__button {
+
+    position: relative;
+    font-size: 36px;
+
+    color: #100b0b;
+    font-weight: bold;
+    text-shadow: var(--text-shadow);
+    border-radius: 18px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      scale: 1.05;
+    }
+
+    &:active {
+      scale: 1;
+      text-shadow: var(--text-shadow-active);
+    }
+
+  }
+}

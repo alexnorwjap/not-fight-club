@@ -110,10 +110,10 @@
               3px 3px 5px rgba(0, 0, 0, 0.1);
     }
     &:hover {
-    &:after {
-      opacity: 1;
-      width: 100%;
-    }
+      &:after {
+        opacity: 1;
+        width: 100%;
+      }
     }
 
   }
@@ -123,6 +123,10 @@
   }
   &.on {
     animation: var(--animationOn);
+  }
+
+  &.none {
+    display: none;
   }
 }
 

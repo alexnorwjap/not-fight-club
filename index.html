@@ -5,9 +5,31 @@
     <link rel="icon" type="image/svg+xml" href="/Favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
+    <style>
+      html, body {
+        overflow: hidden;
+      }
+      .registration, .homepage {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <div class="wrapper">
+  <div class="modal">
+    <div class="modal__window">
+      <h2 class="modal__title"></h2>
+      <div class="modal__content"></div>
+      <div class="modal__img">
+        <img src="/" alt="image-modal" />
+      </div>
+      <button type="button" class="modal__button">Close</button>
+    </div>
+  </div>
+  <div class="wrapper">
+      <div  class="page-loader">
+          <div class="page-loader__img"><img src="/" alt="loader"></div>
+      </div>
+
       <section class="registration">
         <h1 class="registration__title">What is your name, warrior?</h1>
         <label class="registration__label">

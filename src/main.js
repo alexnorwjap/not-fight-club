@@ -1,10 +1,28 @@
 import './style.css'
 import './scss/registration.scss'
 import './scss/homepage.scss'
+import './scss/modal.scss'
+
+import PageLoader from './js/pageLoader.js'
+import {createCharacter} from "./js/createCharacter.js";
+import {BattleEndModal} from "./js/modalWindow.js";
+
+const pageLoader = new PageLoader(1500);
 
 const players = [
 ]
-let currentPlayer
+
+const closeMain = document.querySelector('.homepage__close')
+const createButton = document.querySelector('.registration__btn')
+const inputCharacter = document.querySelector('.registration__input')
+const labelRegistration = document.querySelector('.registration__label');
+const registration = document.querySelector('.registration')
+const avatar = document.querySelector('.avatar')
+const wins = document.querySelector('.character__wins');
+const loses = document.querySelector('.character__loses');
+let currentPlayer;
+let avatarImg = null;
+
 const pathImages = './images/'
 
 const KEYS  = {
@@ -26,44 +44,58 @@ const characterImages = [
         srcAvatar: `${pathImages}crusader/Crus_camp.png`,
         srcBase: `${pathImages}crusader/Crusader.webp`,
         srcAttack: `${pathImages}crusader/Crus_attack.webp`,
-        srcDef: `${pathImages}crusader/Crus_def.webp`
+        srcDef: `${pathImages}crusader/Crus_def.webp`,
+        win: `${pathImages}crusader/Crus_heroic.webp`,
+        lose: `${pathImages}crusader/Crus_dead.webp`,
     },
     {
         name: 'grave-robber',
         srcAvatar: `${pathImages}grave-robber/Grave_robber_camp.png`,
         srcBase: `${pathImages}grave-robber/Graverobber_combat.webp`,
         srcAttack:`${pathImages}grave-robber/Grave_robber_attack.webp`,
-        srcDef: `${pathImages}grave-robber/Grave_robber_defend.webp`
+        srcDef: `${pathImages}grave-robber/Grave_robber_defend.webp`,
+        win: `${pathImages}grave-robber/Grave_robber_heroic.webp`,
+        lose: `${pathImages}grave-robber/Grave_robber_dead.webp`,
     },
     {
         name: 'hellion',
         srcAvatar: `${pathImages}hellion/Hellion_camp.png`,
         srcBase:  `${pathImages}hellion/Hellion_combat.webp`,
         srcAttack: `${pathImages}hellion/Hellion_attack.webp`,
-        srcDef:  `${pathImages}hellion/Hellion_defend.webp`
+        srcDef:  `${pathImages}hellion/Hellion_defend.webp`,
+        win:  `${pathImages}hellion/Hellion_heroic.webp`,
+        lose:  `${pathImages}hellion/Hellion_dead.webp`,
     },
     {
         name: 'houndmaster',
         srcAvatar: `${pathImages}houndmaster/Houndmaster_camp.png`,
         srcBase: `${pathImages}houndmaster/Houndmaster_base.webp`,
         srcAttack:`${pathImages}houndmaster/Houndmaster_attack.webp`,
-        srcDef: `${pathImages}houndmaster/Houndmaster_defend.webp`
+        srcDef: `${pathImages}houndmaster/Houndmaster_defend.webp`,
+        win: `${pathImages}houndmaster/Houndmaster_heroic.webp`,
+        lose: `${pathImages}houndmaster/Houndmaster_dead.webp`,
     },
     {
         name: 'jester',
         srcAvatar: `${pathImages}jester/Jester_camp.png`,
         srcBase: `${pathImages}jester/Jester_base.webp`,
         srcAttack:`${pathImages}jester/Jester_attack.webp`,
-        srcDef: `${pathImages}jester/Jester_defend.webp`
+        srcDef: `${pathImages}jester/Jester_defend.webp`,
+        win: `${pathImages}jester/Jester_heroic.webp`,
+        lose: `${pathImages}jester/Jester_dead.webp`,
     },
     {
         name: 'flagellant',
         srcAvatar: `${pathImages}flagellant/Flagellant_camp.png`,
         srcBase:  `${pathImages}flagellant/Flag_combat.webp`,
         srcAttack: `${pathImages}flagellant/Flagellant_attack.webp`,
-        srcDef:  `${pathImages}flagellant/Flagellant_deffer.webp`
+        srcDef:  `${pathImages}flagellant/Flagellant_deffer.webp`,
+        win:  `${pathImages}flagellant/Flagellant_afflicted.webp`,
+        lose:  `${pathImages}flagellant/Flagellant_dead.webp`,
     }
 ]
+let chooseCharacterImage;
+
 const bossImages = [
     {
         name: 'spider',
@@ -130,6 +162,28 @@ class SimpleRouter {
                 this.showSubPage(this.currentSubPage);
             }
         }
+        const lastPlayersData = sessionStorage.getItem(KEYS.PLAYER_PROFILE);
+        if(lastPlayersData) {
+            const playerData = JSON.parse(lastPlayersData);
+
+
+            currentPlayer = new createCharacter(playerData.name, playerData);
+
+            if(this.currentPage === 'homepage') {
+                document.querySelector('.homepage__title').textContent = currentPlayer.character.name;
+                wins.textContent = currentPlayer.getWins();
+                loses.textContent = currentPlayer.getLoses();
+                if(currentPlayer.character.imageName) {
+                    currentPlayer.createAvatar(characterImages, avatarImg, avatar);
+                }
+                if (currentPlayer.character.imageName) {
+                    const selectedRadio = document.querySelector(`[name="character"][value="${currentPlayer.character.imageName}"]`);
+                    if (selectedRadio) {
+                        selectedRadio.checked = true;
+                    }
+                }
+            }
+        }
         // Обработка кликов по ссылкам меню
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('homepage__main-link')) {
@@ -144,9 +198,10 @@ class SimpleRouter {
                 if(this.currentSubPage === 'character') {
                     return
                 }
+                wins.textContent = currentPlayer.getWins();
+                loses.textContent = currentPlayer.getLoses();
                 this.showSubPage('character');
-
-            }
+                }
             if (e.target.classList.contains('homepage__settings-link')) {
                 e.preventDefault();
                 if(this.currentSubPage === 'settings') {
@@ -155,15 +210,20 @@ class SimpleRouter {
                 this.showSubPage('settings');
             }
             if(e.target.classList.contains('homepage__close')) {
-                // if(this.currentPage === 'registration') {
-                //     return
-                // }
-                sessionStorage.clear()
-                this.showRegistration()
-                players.pop()
-                avatarImg.remove();
-                endFight()
+                sessionStorage.clear();
+                this.showRegistration();
+                players.pop();
 
+                avatar.innerHTML = '';
+
+                document.querySelectorAll('[name="character"]').forEach(radio => {
+                    radio.checked = false;
+                });
+
+                avatarImg = null;
+                players.length = 0;
+                currentPlayer = null;
+                endFight();
             }
         });
 
@@ -234,50 +294,8 @@ class SimpleRouter {
 }
 const router = new SimpleRouter()
 
-const closeMain = document.querySelector('.homepage__close')
-const createButton = document.querySelector('.registration__btn')
-const inputCharacter = document.querySelector('.registration__input')
-const labelRegistration = document.querySelector('.registration__label');
-const registration = document.querySelector('.registration')
-const wins = document.querySelector('.character__wins');
-const loses = document.querySelector('.character__loses');
-
-
 let inputValid;
-class createCharacter  {
-    constructor(name) {
-        this.character= {
-            name: name,
-            imageName: '',
-            wins: {
-                total: 0,
-                logs: []
-            },
-            loses: {
-                total: 0,
-                logs: []
-            },
-        }
-        this.init()
-    }
-    init() {
-        return this.character;
-    }
-    getWins() {
-        return String(this.character.wins.total);
-    }
-    getLoses() {
-        return String(this.character.loses.total);
-    }
 
-    setName(name) {
-        this.character.name = name.trim();
-        return this;
-    }
-    setImageName(name) {
-        this.character.imageName = name;
-    }
-}
 inputCharacter.addEventListener('input', (e)=> {
     inputValid = false
     validateInput(e.target.value, labelRegistration)
@@ -286,8 +304,6 @@ inputCharacter.addEventListener('keydown',(e) => {
     if(e.key === 'Enter') {
         if(inputValid) {
             checkName(inputCharacter.value)
-            wins.textContent = currentPlayer.getWins()
-            loses.textContent = currentPlayer.getLoses()
         }
         if(!inputValid) {
             labelRegistration.classList.add('error')
@@ -301,9 +317,8 @@ inputCharacter.addEventListener('keydown',(e) => {
 createButton.addEventListener('click', ()=> {
     if(inputValid) {
         checkName(inputCharacter.value)
-        wins.textContent = currentPlayer.getWins()
-        loses.textContent = currentPlayer.getLoses()
         inputCharacter.value = '';
+
     }
     if(!inputValid) {
         labelRegistration.classList.add('error')
@@ -349,51 +364,41 @@ function checkName(name) {
     players.push(new createCharacter(inputCharacter.value))
     currentPlayer = players.find(item => item.character.name === name)
     router.hideRegistrPages()
+    sessionStorage.setItem(KEYS.PLAYER_PROFILE, JSON.stringify(currentPlayer.character));
     console.log(currentPlayer.character, players)
 
     setTimeout(() => {
         router.showHomepage();
-
         document.querySelector('.homepage__title').textContent = currentPlayer.character.name;
+
     }, 500);
 }
 
 
 
-const avatar = document.querySelector('.avatar')
+
 const btnAvatar = document.querySelector('.character__btn')
 const characterRadio = document.querySelectorAll('[name="character"]')
 const fightButton = document.querySelector('.homepage__btn-fight');
 const battleWrapper = document.querySelector('.battle-wrapper');
 const roundButtle = document.querySelector('.battle-wrapper__start-fight')
 let roundReady = false;
-let currentAvatar ;
-let avatarImg = null;
 
 
 characterRadio.forEach(item => {
     item.addEventListener('change', (e)=> {
-        currentAvatar  = e.target.value;
-
+        currentPlayer.setImageName(e.target.value);
     })
 })
 btnAvatar.addEventListener('click', ()=> {
-    const selectAvatar = characterImages.filter((item)=> item.name === currentAvatar)
-    if (avatarImg) {
-        avatarImg.remove();
-    }
-        avatarImg = document.createElement('img');
-        avatarImg.className = 'avatar-img';
-        avatarImg.alt = 'avatar';
-        avatarImg.src = selectAvatar[0].srcAvatar
-        avatar.appendChild(avatarImg);
-        currentPlayer.setImageName(currentAvatar)
-        fightButton.classList.remove('inactive')
+    currentPlayer.createAvatar(characterImages, avatarImg, avatar);
+    fightButton.classList.remove('inactive')
+    sessionStorage.setItem(KEYS.PLAYER_PROFILE, JSON.stringify(currentPlayer.character));
 })
 
 const inputSettings = document.querySelector('.settings__input');
-const btnSettings = document.querySelector('.settings__btn')
-const labelSettings = document.querySelector('.settings__label')
+const btnSettings = document.querySelector('.settings__btn');
+const labelSettings = document.querySelector('.settings__label');
 
 inputSettings.addEventListener('input', (e) => {
     inputValid = false;
@@ -404,7 +409,8 @@ btnSettings.addEventListener('click', () => {
     if(inputValid) {
         currentPlayer.character.name = inputSettings.value;
         document.querySelector('.homepage__title').textContent = currentPlayer.character.name;
-        inputSettings.value = ''
+        inputSettings.value = '';
+        sessionStorage.setItem(KEYS.PLAYER_PROFILE, JSON.stringify(currentPlayer.character));
     }
     if(!inputValid) {
         labelRegistration.classList.add('error')
@@ -420,6 +426,7 @@ inputSettings.addEventListener('keydown', (e) => {
         document.querySelector('.homepage__title').textContent = currentPlayer.character.name;
         inputSettings.value = '';
         inputValid = false;
+        sessionStorage.setItem(KEYS.PLAYER_PROFILE, JSON.stringify(currentPlayer.character));
     }
 })
 
@@ -482,7 +489,7 @@ const bossConfigs = [
         name: 'spider',
         displayName: 'Spider',
         hp: 250,
-        damage: 15,
+        damage: 415,
         critChance: 0.25,
         attackZones: 2,
         blockZones: 1
@@ -491,7 +498,7 @@ const bossConfigs = [
         name: 'gargoyle',
         displayName: 'Gargoyle',
         hp: 350,
-        damage: 20,
+        damage: 420,
         critChance: 0.20,
         attackZones: 1,
         blockZones: 2
@@ -500,7 +507,7 @@ const bossConfigs = [
         name: 'gaint',
         displayName: 'Giant',
         hp: 425,
-        damage: 45,
+        damage: 445,
         critChance: 0.05,
         attackZones: 1,
         blockZones: 1
@@ -515,7 +522,7 @@ class Hero {
         this.name = name;
         this.maxHp = 300;
         this.hp = 300;
-        this.damage = 2110;
+        this.damage = 40;
         this.critChance = 0.2;
         this.critMultiplier = 2;
     }
@@ -581,18 +588,18 @@ class BattleLog {
     }
 
     addHit(attacker, target, zone, damage) {
-        const message = `⚔️ ${attacker} hits ${target} in the ${zone} for ${damage} damage.`;
+        const message = `⚔️ <span class="log-variable">${attacker}</span> hits <span class="log-variable">${target}</span> in the <span class="log-variable">${zone}</span> for <span class="log-variable">${damage}</span> damage.`;
         this.addLog(message);
     }
 
     addBlock(target, attacker, zone, damage) {
-        const message = `🛡️ ${target} blocks ${damage} damage to the ${zone} from ${attacker}.`;
+        const message = `🛡️ <span class="log-variable">${target}</span> blocks <span class="log-variable">${damage}</span> damage to the <span class="log-variable">${zone}</span> from <span class="log-variable">${attacker}</span>.`;
         this.addLog(message);
     }
 
     addCriticalHit(attacker, target, zone, damage, piercingBlock = false) {
         const pierceText = piercingBlock ? " (piercing the block)" : "";
-        const message = `💥 ${attacker} lands a critical hit on ${target}'s ${zone}, dealing ${damage} damage${pierceText}.`;
+        const message = `💥 <span class="log-variable">${attacker}</span> lands a critical hit on <span class="log-variable">${target}</span>'s <span class="log-variable">${zone}</span>, dealing <span class="log-variable">${damage}</span> damage <span class="log-variable">${pierceText}</span>.`;
         this.addLog(message);
     }
 
@@ -602,17 +609,17 @@ class BattleLog {
     }
 
     addBattleStart(heroName, bossName) {
-        const message = `⚔️ Battle started! ${heroName} vs ${bossName}`;
+        const message = `⚔️ Battle started! <span class="log-variable">${heroName}</span> vs <span class="log-variable">${bossName}</span>`;
         this.addLog(message);
     }
 
     addVictory(winner) {
-        const message = `🏆 ${winner} wins the battle!`;
+        const message = `🏆 <span class="log-variable">${winner}</span> wins the battle!`;
         this.addLog(message);
     }
 
     addDefeat(loser) {
-        const message = `💀 ${loser} has been defeated!`;
+        const message = `💀 <span class="log-variable">${loser}</span> has been defeated!`;
         this.addLog(message);
     }
 
@@ -627,7 +634,7 @@ class BattleLog {
 
         const span = document.createElement('span');
         span.className = 'logs-battle__log-basis';
-        span.textContent = message;
+        span.innerHTML = message;
 
         logElement.appendChild(span);
         this.logContainer.appendChild(logElement);
@@ -683,12 +690,7 @@ class Battle {
             await this.processBossAttacks(bossAttackZones);
         }
 
-
-
-
         // Обновляем UI
-
-
 
         // Проверяем окончание битвы
         if (!this.hero.isAlive() || !this.boss.isAlive()) {
@@ -696,6 +698,9 @@ class Battle {
         } else {
             this.round++;
             this.clearSelections();
+
+            // Сохраняем состояние после каждого хода
+            saveBattleState();
         }
     }
 
@@ -808,16 +813,22 @@ class Battle {
 
     }
 
-    endBattle() {
+    async endBattle() {
         this.isGameOver = true;
+        let battleModal;
 
         if (!this.hero.isAlive()) {
             this.battleLog.addDefeat(this.hero.name);
             currentPlayer.character.loses.total++;
+            battleModal = new BattleEndModal(false, chooseCharacterImage)
+            battleModal.loadContent()
         } else if (!this.boss.isAlive()) {
             this.battleLog.addVictory(this.hero.name);
             currentPlayer.character.wins.total++;
+            battleModal = new BattleEndModal(true, chooseCharacterImage)
+            battleModal.loadContent()
         }
+
 
         // Переделать на записать статистику и логи в данные пользователя
         document.querySelector('.character__wins').textContent = currentPlayer.character.wins.total;
@@ -826,18 +837,27 @@ class Battle {
         this.clearSelections()
         endFight()
         currentBattle = null
+
+        // Очищаем сохраненное состояние битвы
+        clearBattleState();
     }
 }
 
-
 let currentBattle = null;
+window.addEventListener('DOMContentLoaded', () => {
+    // Ваша существующая логика загрузки...
 
+    // Проверяем сохраненную битву
+    if (sessionStorage.getItem(KEYS.CURRENT_FIGHT)) {
+        restoreBattleState();
+    }
+});
 fightButton.addEventListener('click', (e)=> {
     if(!currentPlayer.character.imageName) {
         fightButton.classList.add('inactive')
         return;
     }
-
+    chooseCharacterImage = characterImages.find(char => char.name === currentPlayer.character.imageName);
     loadHeroImages(currentPlayer.character.imageName);
 
     const randomBossConfig = getRandomBoss()
@@ -852,7 +872,9 @@ fightButton.addEventListener('click', (e)=> {
     setTimeout(()=> {
         battleWrapper.classList.add('on')
     }, 100)
-    console.log(currentPlayer)
+
+    // Сохраняем состояние битвы при старте
+    saveBattleState();
 })
 
 roundButtle.addEventListener('click', ()=> {
@@ -874,4 +896,132 @@ function endFight() {
     }, 500)
     battleWrapper.classList.remove('on')
 
+}
+
+
+
+
+
+
+
+
+
+
+// Функция для сериализации состояния битвы
+function saveBattleState() {
+    if (currentBattle) {
+        const battleState = {
+            // Данные героя
+            hero: {
+                name: currentBattle.hero.name,
+                hp: currentBattle.hero.hp,
+                maxHp: currentBattle.hero.maxHp,
+                damage: currentBattle.hero.damage,
+                critChance: currentBattle.hero.critChance,
+                critMultiplier: currentBattle.hero.critMultiplier
+            },
+            // Данные босса
+            boss: {
+                name: currentBattle.boss.name,
+                hp: currentBattle.boss.hp,
+                maxHp: currentBattle.boss.maxHp,
+                damage: currentBattle.boss.damage,
+                critChance: currentBattle.boss.critChance,
+                critMultiplier: currentBattle.boss.critMultiplier,
+                attackZones: currentBattle.boss.attackZones,
+                blockZones: currentBattle.boss.blockZones
+            },
+            // Данные битвы
+            round: currentBattle.round,
+            isGameOver: currentBattle.isGameOver,
+            playerAttackZone: currentBattle.playerAttackZone,
+            playerBlockZones: currentBattle.playerBlockZones,
+            // Логи битвы
+            battleLogs: currentBattle.battleLog.logs,
+            // Дополнительные данные
+            heroImageName: currentPlayer.character.imageName,
+            bossConfig: findBossConfigByName(currentBattle.boss.name)
+        };
+
+        sessionStorage.setItem(KEYS.CURRENT_FIGHT, JSON.stringify(battleState));
+    }
+}
+
+// Функция для поиска конфигурации босса по имени
+function findBossConfigByName(bossName) {
+    return bossConfigs.find(boss => boss.displayName === bossName);
+}
+
+// Функция для восстановления состояния битвы
+function restoreBattleState() {
+    const savedBattle = sessionStorage.getItem(KEYS.CURRENT_FIGHT);
+    if (savedBattle) {
+        try {
+            const battleState = JSON.parse(savedBattle);
+
+            // Восстанавливаем изображения
+            loadHeroImages(battleState.heroImageName);
+            loadBossImages(battleState.bossConfig.name);
+
+            chooseCharacterImage = characterImages.find(char => char.name === battleState.heroImageName);
+
+
+            // Создаем новые объекты Hero и Boss с сохраненными данными
+            const hero = new Hero(battleState.hero.name);
+            hero.hp = battleState.hero.hp;
+            hero.maxHp = battleState.hero.maxHp;
+            hero.damage = battleState.hero.damage;
+            hero.critChance = battleState.hero.critChance;
+            hero.critMultiplier = battleState.hero.critMultiplier;
+
+            const boss = new Boss(battleState.bossConfig);
+            boss.hp = battleState.boss.hp;
+            boss.maxHp = battleState.boss.maxHp;
+
+            // Создаем новую битву
+            currentBattle = new Battle(hero, battleState.playerAttackZone, battleState.playerBlockZones, boss);
+
+            // Восстанавливаем состояние битвы
+            currentBattle.round = battleState.round;
+            currentBattle.isGameOver = battleState.isGameOver;
+
+            // Восстанавливаем логи битвы
+            currentBattle.battleLog.logs = battleState.battleLogs || [];
+            restoreBattleLogs(battleState.battleLogs);
+
+            // Показываем интерфейс битвы
+            showBattleInterface();
+
+            console.log('Битва восстановлена!');
+
+        } catch (error) {
+            console.error('Ошибка при восстановлении битвы:', error);
+            // Очищаем некорректные данные
+            sessionStorage.removeItem(KEYS.CURRENT_FIGHT);
+        }
+    }
+}
+
+// Функция для восстановления логов битвы в UI
+function restoreBattleLogs(logs) {
+    if (logs && logs.length > 0) {
+        const logContainer = document.querySelector('.logs-battle__list');
+        logContainer.innerHTML = '';
+
+        logs.forEach(logEntry => {
+            currentBattle.battleLog.displayLog(logEntry.message);
+        });
+    }
+}
+
+// Функция для показа интерфейса битвы
+function showBattleInterface() {
+    fightButton.classList.add('off');
+    battleWrapper.classList.remove('none');
+    battleWrapper.classList.add('on');
+}
+
+// Функция для очистки сохраненного состояния битвы
+function clearBattleState() {
+    sessionStorage.removeItem(KEYS.CURRENT_FIGHT);
 }

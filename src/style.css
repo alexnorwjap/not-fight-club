@@ -35,10 +35,11 @@
   font-family: var(--ff), sans-serif;
   font-size: 24px;
   letter-spacing: 0.1em;
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
+    position: relative;
   margin: 0;
   padding: 0;
   background: rgb(14, 6, 6);
@@ -57,13 +58,50 @@ button {
 }
 
 
+
+
 .wrapper {
   position: relative;
   width: 100vw;
   height: 100vh;
   display: flex;
-    flex-direction: column;
+  flex-direction: column;
+}
 
 
+
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(14, 6, 6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+
+    &__img {
+        max-width: 500px;
+    }
+}
+
+
+.page-loader img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.log-variable {
+    text-decoration: underline;
 }
 
