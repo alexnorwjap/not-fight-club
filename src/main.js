@@ -564,9 +564,9 @@ const bossConfigs = [
   {
     name: 'spider',
     displayName: 'Spider',
-    hp: 300,
-    damage: 19,
-    critChance: 0.4,
+    hp: 315,
+    damage: 16,
+    critChance: 0.33,
     critMultiplier: 2,
     attackZones: 2,
     blockZones: 1,
@@ -575,7 +575,7 @@ const bossConfigs = [
     name: 'gargoyle',
     displayName: 'Gargoyle',
     hp: 375,
-    damage: 30,
+    damage: 22,
     critChance: 0.2,
     critMultiplier: 1.5,
     attackZones: 1,
@@ -585,9 +585,9 @@ const bossConfigs = [
     name: 'gaint',
     displayName: 'Giant',
     hp: 450,
-    damage: 50,
+    damage: 47,
     critChance: 0.15,
-    critMultiplier: 1.7,
+    critMultiplier: 2,
     attackZones: 1,
     blockZones: 1,
   },
@@ -601,8 +601,8 @@ class Hero {
     this.name = name;
     this.maxHp = 350;
     this.hp = 350;
-    this.damage = 33;
-    this.critChance = 0.2;
+    this.damage = 35;
+    this.critChance = 0.22;
     this.critMultiplier = 1.7;
   }
 
