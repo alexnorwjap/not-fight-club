@@ -6,42 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
     <style>
-      html, body {
+      html,
+      body {
         overflow: hidden;
       }
-      .registration, .homepage {
+      .registration,
+      .homepage {
         display: none;
       }
     </style>
   </head>
   <body>
-  <div class="modal">
-    <div class="modal__window">
-      <h2 class="modal__title"></h2>
-      <div class="modal__content"></div>
-      <div class="modal__img">
-        <img src="/" alt="image-modal" />
+    <div class="modal">
+      <div class="modal__window">
+        <button class="modal__close">X</button>
+        <h2 class="modal__title"></h2>
+        <div class="modal__content"></div>
+        <div class="modal__img">
+          <img src="/" alt="image-modal" />
+        </div>
+        <button type="button" class="modal__button">Close</button>
       </div>
-      <button type="button" class="modal__button">Close</button>
     </div>
-  </div>
-  <div class="wrapper">
-      <div  class="page-loader">
-          <div class="page-loader__img"><img src="/" alt="loader"></div>
+    <div class="wrapper">
+      <div class="page-loader">
+        <div class="page-loader__img"><img src="/" alt="loader" /></div>
       </div>
 
       <section class="registration">
         <h1 class="registration__title">What is your name, warrior?</h1>
         <label class="registration__label">
           <span class="registration__subtitle">Character Name</span>
-          <input class="registration__input" type="text" placeholder="Fighter"  maxlength="15">
+          <input
+            class="registration__input"
+            type="text"
+            placeholder="Fighter"
+            maxlength="15" />
         </label>
         <button class="registration__btn">Create Character</button>
       </section>
       <section class="homepage">
         <div class="homepage__header">
-          <h2 class="homepage__title">
-          </h2>
+          <h2 class="homepage__title"></h2>
           <div class="avatar"></div>
           <ul class="homepage__menu">
             <li class="homepage__item">
@@ -54,15 +60,21 @@
               <a href="#" class="homepage__settings-link">Settings</a>
             </li>
           </ul>
-          <button  class="homepage__close">X</button>
+          <button class="homepage__close">X</button>
         </div>
         <div class="homepage__main">
           <button class="homepage__btn-fight">Fight!</button>
           <div class="homepage__battle-wrapper battle-wrapper none">
             <div class="battle-wrapper__hero hero">
-              <div class="hero__image--main"><img src="/" alt="image-hero"></div>
-              <div class="hero__image--attack"><img src="/" alt="image-hero-attack"></div>
-              <div class="hero__image--def"><img src="/" alt="image-hero-def"></div>
+              <div class="hero__image--main">
+                <img src="/" alt="image-hero" />
+              </div>
+              <div class="hero__image--attack">
+                <img src="/" alt="image-hero-attack" />
+              </div>
+              <div class="hero__image--def">
+                <img src="/" alt="image-hero-def" />
+              </div>
               <div class="hero__hp">
                 <span class="hp-text-hero"></span>
               </div>
@@ -71,39 +83,116 @@
               <div class="battle-settings__block">
                 <h3 class="battle-settings__title-block">Check 2 block zone</h3>
                 <ul class="battle-settings__list">
-                <li class="battle-settings__item"><label class="inactive"><input class="block" type="checkbox" value="head">Head</label></li>
-                <li class="battle-settings__item"><label class="inactive"><input class="block" type="checkbox" value="neck">Neck</label></li>
-                <li class="battle-settings__item"><label class="inactive"><input class="block" type="checkbox" value="arms">Arms</label></li>
-                <li class="battle-settings__item"><label class="inactive"><input class="block" type="checkbox" value="body">Body</label></li>
-                <li class="battle-settings__item"><label class="inactive"><input class="block" type="checkbox" value="arms">Legs</label></li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="block"
+                        type="checkbox"
+                        value="head" />Head</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="block"
+                        type="checkbox"
+                        value="neck" />Neck</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="block"
+                        type="checkbox"
+                        value="arms" />Arms</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="block"
+                        type="checkbox"
+                        value="body" />Body</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="block"
+                        type="checkbox"
+                        value="arms" />Legs</label
+                    >
+                  </li>
                 </ul>
               </div>
               <div class="battle-settings__attack">
-                <h3 class="battle-settings__title-block">Check 1 attack zone</h3>
-              <ul class="battle-settings__list">
-                <li class="battle-settings__item"><label class="inactive"><input class="attack" type="checkbox" value="head">Head</label></li>
-                <li class="battle-settings__item"><label  class="inactive"><input class="attack" type="checkbox" value="neck">Neck</label></li>
-                <li class="battle-settings__item"><label  class="inactive"><input class="attack" type="checkbox" value="arms">Arms</label></li>
-                <li class="battle-settings__item"><label class="inactive"><input class="attack" type="checkbox" value="body">Body</label></li>
-                <li class="battle-settings__item"><label class="inactive"><input class="attack" type="checkbox" value="arms">Legs</label></li>
-              </ul>
+                <h3 class="battle-settings__title-block">
+                  Check 1 attack zone
+                </h3>
+                <ul class="battle-settings__list">
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="attack"
+                        type="checkbox"
+                        value="head" />Head</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="attack"
+                        type="checkbox"
+                        value="neck" />Neck</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="attack"
+                        type="checkbox"
+                        value="arms" />Arms</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="attack"
+                        type="checkbox"
+                        value="body" />Body</label
+                    >
+                  </li>
+                  <li class="battle-settings__item">
+                    <label class="inactive"
+                      ><input
+                        class="attack"
+                        type="checkbox"
+                        value="arms" />Legs</label
+                    >
+                  </li>
+                </ul>
               </div>
             </div>
             <div class="battle-wrapper__boss boss">
-              <div class="boss__image--main"><img src="/" alt="boss-hero"></div>
-              <div class="boss__image--attack"><img src="/" alt="boss-hero-attack"></div>
-              <div class="boss__image--def"><img src="/" alt="boss-hero-def"></div>
+              <div class="boss__image--main">
+                <img src="/" alt="boss-hero" />
+              </div>
+              <div class="boss__image--attack">
+                <img src="/" alt="boss-hero-attack" />
+              </div>
+              <div class="boss__image--def">
+                <img src="/" alt="boss-hero-def" />
+              </div>
               <div class="boss__hp">
                 <span class="hp-text-boss"></span>
               </div>
             </div>
-            <button class="battle-wrapper__start-fight inactive">Attack!</button>
+            <button class="battle-wrapper__start-fight inactive">
+              Attack!
+            </button>
             <div class="battle-wrapper__logs logs-battle">
-              <h3 class="logs-battle__title">
-                  History battle
-              </h3>
-              <ul class="logs-battle__list">
-              </ul>
+              <h3 class="logs-battle__title">History battle</h3>
+              <ul class="logs-battle__list"></ul>
             </div>
           </div>
         </div>
@@ -120,38 +209,38 @@
           <ul class="character__list">
             <li class="character__item">
               <label class="character__img">
-                <img src="/images/CrusaderCharacter.webp" alt="crusader">
-                <input type="radio" name="character" value="crusader">
+                <img src="/images/CrusaderCharacter.webp" alt="crusader" />
+                <input type="radio" name="character" value="crusader" />
               </label>
             </li>
             <li class="character__item">
               <label class="character__img">
-                <img src="/images/Grave_Robber.webp" alt="Grave_Robber">
-                <input type="radio" name="character" value="grave-robber">
-              </label>
-            </li>
-            <li class="character__item">
-            <label class="character__img">
-              <img src="/images/Hellion.webp" alt="Hellion">
-              <input type="radio" name="character" value="hellion">
-            </label>
-          </li>
-            <li class="character__item">
-              <label class="character__img">
-                <img src="/images/Hound_Master.webp" alt="Hound_Master">
-                <input type="radio" name="character" value="houndmaster">
+                <img src="/images/Grave_Robber.webp" alt="Grave_Robber" />
+                <input type="radio" name="character" value="grave-robber" />
               </label>
             </li>
             <li class="character__item">
               <label class="character__img">
-                <img src="/images/Jester.webp" alt="Jester">
-                <input type="radio" name="character" value="jester">
+                <img src="/images/Hellion.webp" alt="Hellion" />
+                <input type="radio" name="character" value="hellion" />
               </label>
             </li>
             <li class="character__item">
               <label class="character__img">
-                <img src="/images/The_Flagellant.webp" alt="The_Flagellant">
-                <input type="radio" name="character" value="flagellant">
+                <img src="/images/Hound_Master.webp" alt="Hound_Master" />
+                <input type="radio" name="character" value="houndmaster" />
+              </label>
+            </li>
+            <li class="character__item">
+              <label class="character__img">
+                <img src="/images/Jester.webp" alt="Jester" />
+                <input type="radio" name="character" value="jester" />
+              </label>
+            </li>
+            <li class="character__item">
+              <label class="character__img">
+                <img src="/images/The_Flagellant.webp" alt="The_Flagellant" />
+                <input type="radio" name="character" value="flagellant" />
               </label>
             </li>
           </ul>
@@ -160,7 +249,11 @@
           <h2 class="settings__title">Settings</h2>
           <label class="settings__label">
             <span class="settings__subtitle">Change Name</span>
-            <input class="settings__input" type="text" placeholder="New name?"  maxlength="15">
+            <input
+              class="settings__input"
+              type="text"
+              placeholder="New name?"
+              maxlength="15" />
           </label>
           <button class="settings__btn">Change</button>
         </div>

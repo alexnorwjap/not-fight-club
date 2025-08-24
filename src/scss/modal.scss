@@ -4,7 +4,9 @@
   background: rgba(0, 0, 0, 0.8);
   z-index: 9999;
   opacity: 0;
-  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+  transition:
+    opacity 0.5s ease-out,
+    visibility 0.5s ease-out;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: none;
@@ -17,6 +19,7 @@
     opacity: 1;
   }
   &__window {
+    position: relative;
     max-width: 1200px;
     height: max-content;
     display: flex;
@@ -28,8 +31,28 @@
     border: 2px solid #100b0b;
     border-radius: 10px;
     transition: all 0.5s ease;
+  }
+
+  &__close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 36px;
+
+    font-weight: bold;
+    color: #100b0b;
+
+    text-shadow: var(--text-shadow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
     &:hover {
-      scale: 1.05;
+      scale: 1.1;
+    }
+
+    &:active {
+      scale: 1;
+      text-shadow: var(--text-shadow-active);
     }
   }
 
@@ -54,7 +77,6 @@
   }
 
   &__button {
-
     position: relative;
     font-size: 36px;
 
@@ -62,7 +84,7 @@
     font-weight: bold;
     text-shadow: var(--text-shadow);
     border-radius: 18px;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
 
     &:hover {
@@ -73,6 +95,5 @@
       scale: 1;
       text-shadow: var(--text-shadow-active);
     }
-
   }
 }
