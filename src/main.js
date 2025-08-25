@@ -30,6 +30,7 @@ const KEYS = {
   GAME_SETTINGS: 'fight_game_settings',
   ALL_PLAYERS: 'fight_game_all_players',
   CURRENT_FIGHT: 'fight_game_current_fight',
+  SELECTED_PARTS: 'fight_game_selected_parts',
 };
 
 const currentRout = {
@@ -512,6 +513,71 @@ const selectedParts = {
   blockParts: [],
   attackParts: [],
 };
+function saveSelectedParts() {
+  sessionStorage.setItem(KEYS.SELECTED_PARTS, JSON.stringify(selectedParts));
+}
+function loadSelectedParts() {
+  const saved = sessionStorage.getItem(KEYS.SELECTED_PARTS);
+  console.log(saved);
+  if (saved) {
+    try {
+      const parsedParts = JSON.parse(saved);
+      selectedParts.blockParts = parsedParts.blockParts || [];
+      selectedParts.attackParts = parsedParts.attackParts || [];
+
+      // Восстанавливаем состояние чекбоксов
+      restoreCheckboxesState();
+    } catch (error) {
+      console.error('Ошибка при загрузке выбранных зон:', error);
+      // В случае ошибки очищаем некорректные данные
+      sessionStorage.removeItem(KEYS.SELECTED_PARTS);
+    }
+  }
+}
+function restoreCheckboxesState() {
+  // Восстанавливаем состояние для блоков
+  block.forEach((checkbox) => {
+    console.log(
+      selectedParts.blockParts,
+      selectedParts.blockParts.includes(checkbox.value),
+    );
+    checkbox.checked = selectedParts.blockParts.includes(checkbox.value);
+  });
+
+  // Восстанавливаем состояние для атак
+  attack.forEach((checkbox) => {
+    console.log(
+      selectedParts.attackParts,
+      selectedParts.attackParts.includes(checkbox.value),
+    );
+    checkbox.checked = selectedParts.attackParts.includes(checkbox.value);
+  });
+
+  // Применяем ограничения на количество выбранных элементов
+  applyCheckboxLimits(block, 2, selectedParts.blockParts);
+  applyCheckboxLimits(attack, 1, selectedParts.attackParts);
+
+  // Проверяем готовность к бою
+  checkActionsCompleted();
+}
+
+function applyCheckboxLimits(checkboxes, maxCount, selectedArray) {
+  if (selectedArray.length === maxCount) {
+    checkboxes.forEach((cb) => {
+      if (!cb.checked) {
+        cb.disabled = true;
+        cb.parentElement.classList.add('disabled');
+      }
+    });
+  } else {
+    // Включаем все чекбоксы когда лимит не достигнут
+    checkboxes.forEach((cb) => {
+      cb.disabled = false;
+      cb.parentElement.classList.remove('disabled');
+    });
+  }
+  checkActionsCompleted();
+}
 
 function handleCheckboxes(what, how, selected) {
   what.forEach((checkbox) => {
@@ -536,12 +602,12 @@ function handleCheckboxes(what, how, selected) {
           cb.parentElement.classList.remove('disabled');
         });
       }
+      saveSelectedParts();
       checkActionsCompleted();
     });
   });
 }
-handleCheckboxes(block, 2, selectedParts.blockParts);
-handleCheckboxes(attack, 1, selectedParts.attackParts);
+
 function checkActionsCompleted() {
   const attackCompleted = selectedParts.attackParts.length === 1;
   const blockCompleted = selectedParts.blockParts.length === 2;
@@ -927,6 +993,9 @@ class Battle {
 
     selectedParts.attackParts.length = 0;
     selectedParts.blockParts.length = 0;
+
+    // Сохраняем очищенное состояние в storage
+    saveSelectedParts();
   }
 
   async endBattle() {
@@ -963,7 +1032,15 @@ class Battle {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  // Требует рефакторинг
+  // Сначала загружаем сохраненное состояние
+  console.log(selectedParts);
+  loadSelectedParts();
+  console.log(selectedParts);
+
+  // Затем настраиваем обработчики событий
+  handleCheckboxes(block, 2, selectedParts.blockParts);
+  handleCheckboxes(attack, 1, selectedParts.attackParts);
+
   if (sessionStorage.getItem(KEYS.CURRENT_FIGHT)) {
     restoreBattleState();
   }
@@ -1026,6 +1103,9 @@ function endFight() {
   // Сбрасываем все показатели боя
   selectedParts.attackParts.length = 0;
   selectedParts.blockParts.length = 0;
+
+  // Сохраняем очищенное состояние в storage
+  saveSelectedParts();
 
   // Сбрасываем состояние чекбоксов атаки
   attack.forEach((checkbox) => {

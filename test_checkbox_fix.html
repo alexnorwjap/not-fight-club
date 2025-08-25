@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Checkbox Storage Fix</title>
+</head>
+<body>
+    <h1>Тест исправления хранения состояния чекбоксов</h1>
+    
+    <h2>Инструкции для тестирования:</h2>
+    <ol>
+        <li>Откройте основное приложение</li>
+        <li>Выберите несколько чекбоксов для атаки и блока</li>
+        <li>Начните бой</li>
+        <li>Завершите бой (или используйте clearSelections())</li>
+        <li>Перезагрузите страницу</li>
+        <li>Проверьте, что чекбоксы пустые и в storage нет старых данных</li>
+    </ol>
+    
+    <h2>Проверка sessionStorage:</h2>
+    <button onclick="checkStorage()">Проверить sessionStorage</button>
+    <button onclick="clearStorage()">Очистить sessionStorage</button>
+    <div id="storage-info"></div>
+    
+    <script>
+        function checkStorage() {
+            const selectedParts = sessionStorage.getItem('fight_game_selected_parts');
+            const info = document.getElementById('storage-info');
+            
+            if (selectedParts) {
+                const parsed = JSON.parse(selectedParts);
+                info.innerHTML = `
+                    <h3>Текущее состояние в storage:</h3>
+                    <p>Attack Parts: ${JSON.stringify(parsed.attackParts)}</p>
+                    <p>Block Parts: ${JSON.stringify(parsed.blockParts)}</p>
+                `;
+            } else {
+                info.innerHTML = '<h3>Storage пуст (это правильно после очистки)</h3>';
+            }
+        }
+        
+        function clearStorage() {
+            sessionStorage.removeItem('fight_game_selected_parts');
+            document.getElementById('storage-info').innerHTML = '<h3>Storage очищен</h3>';
+        }
+        
+        // Автоматическая проверка при загрузке
+        window.onload = function() {
+            checkStorage();
+        };
+    </script>
+</body>
+</html>
